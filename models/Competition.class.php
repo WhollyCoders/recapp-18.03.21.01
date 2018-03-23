@@ -63,7 +63,7 @@ class Competition{
         ) ENGINE = InnoDB;";
         
         if($result = $this->processQuery($sql)){
-            echo('Competitions Table Created...');
+            // echo('Competitions Table Created...');
         }
     }
 
@@ -84,7 +84,10 @@ class Competition{
             '$this->details',
             CURRENT_TIMESTAMP
           );";
-        $result = $this->processQuery($sql);
+
+        if($result = $this->processQuery($sql)){
+            echo("<script> alert('".$this->name." Competition Has Been Added...') </script>");
+        }
 
     }
 
@@ -129,6 +132,6 @@ class Competition{
 }
 // ***** Test Code *****
 
-$Competition = new Competition($connection);
+
 
 ?>
