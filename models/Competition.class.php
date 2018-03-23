@@ -67,6 +67,15 @@ class Competition{
         }
     }
 
+// Get Competition Data
+
+    public function getCompetitionData($result){
+
+            $row = mysqli_fetch_assoc($result);
+            return $competition_name = $row['competition_name'];
+
+    }
+    
 // Insert Competition
 
     public function insertCompetition(){
@@ -98,7 +107,28 @@ class Competition{
     }
 
 // Select Competition By Id
-// Select Competition By Name
+
+    public function getCompetitionByID($id){
+        $sql = "SELECT competition_name FROM competitions WHERE competition_ID=$id;";
+        if($result = $this->processQuery($sql)){
+            return $this->getCompetitionData($result);
+        }
+
+        echo('ID #'.$id.' Does not exist...');
+    }
+
+// Select Competition ID By Name
+
+    public function getID($name){
+        $sql = "SELECT competition_ID FROM competitions WHERE competition_name='$name' LIMIT 1;";
+        if($result = $this->processQuery($sql)){
+
+            $row = mysqli_fetch_assoc($result);
+            return $id = $row['competition_ID'];
+        }
+
+    }
+
 // Select Competitor By Id
 // Select Competitor By Name
 // Select Team By Id
@@ -132,6 +162,12 @@ class Competition{
 }
 // ***** Test Code *****
 
+$Competition = new Competition($connection);
 
+// $name = 'SC Losing To Live';
+// echo $competition_data = $Competition->getID($name);
+
+// $id = 1;
+// echo $competition_data = $Competition->getCompetitionByID($id);
 
 ?>
