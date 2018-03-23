@@ -24,6 +24,8 @@ class Competition{
     public $name;
     public $location;
     public $details;
+    protected $data;
+    protected $json;
 
 /********************************
 * Competition Class Constructor
@@ -67,15 +69,39 @@ class Competition{
         }
     }
 
-// Get Competition Data
+// Get Competition Name
 
-    public function getCompetitionData($result){
+    public function getCompetitionName($result){
 
             $row = mysqli_fetch_assoc($result);
             return $competition_name = $row['competition_name'];
 
     }
-    
+
+// Get Competition Data (ALL)
+
+    public function getCompetitionsData($result){
+        $this->data = array();
+        while($rows = mysqli_fetch_assoc($result)){
+            $this->id       = $rows['competition_ID'];
+            $this->name     = $rows['competition_name'];
+            $this->location = $rows['competition_location'];
+            $this->details  = $rows['competition_details'];
+
+            $this->data[] = array(
+                'competition_ID'        => $this->id,
+                'competition_name'      => $this->name,
+                'competition_location'  => $this->location,
+                'competition_details'   => $this->details
+            );
+        }
+
+        $this->json = json_encode($this->data);
+        return $this->data;
+
+    }
+
+
 // Insert Competition
 
     public function insertCompetition(){
@@ -106,12 +132,12 @@ class Competition{
         return mysqli_query($this->connection, $sql);
     }
 
-// Select Competition By Id
+// Select Competition Name By Id
 
-    public function getCompetitionByID($id){
+    public function getCompetitionNameByID($id){
         $sql = "SELECT competition_name FROM competitions WHERE competition_ID=$id;";
         if($result = $this->processQuery($sql)){
-            return $this->getCompetitionData($result);
+            return $this->getCompetitionName($result);
         }
 
         echo('ID #'.$id.' Does not exist...');
@@ -152,6 +178,16 @@ class Competition{
     }
 
 // View Competitions
+
+    public function getCompetitions(){
+        $sql = "SELECT * FROM competitions;";
+        if($result = $this->processQuery($sql)){
+
+            return $this->getCompetitionsData($result);
+
+        }
+    }
+
 // View Competitors
 // View Teams
 // View Team Leaders
@@ -163,6 +199,16 @@ class Competition{
 // ***** Test Code *****
 
 $Competition = new Competition($connection);
+
+$competition_data = $Competition->getCompetitions();
+
+echo('<pre>');
+print_r($Competition);
+echo('</pre>');
+
+// echo('<pre>');
+// print_r($competition_data);
+// echo('</pre>');
 
 // $name = 'SC Losing To Live';
 // echo $competition_data = $Competition->getID($name);
